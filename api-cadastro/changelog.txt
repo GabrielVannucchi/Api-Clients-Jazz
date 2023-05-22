@@ -1,0 +1,31 @@
+:15-05-2023
+@toDo apiClient
+jUnit
+verificar a possibilidade de customizar exceções lançadas pelo validation
+Remover os autowired
+separar melhor as Dto's
+
+@changelog
+Alterado todos os nomes de parametros de português para inglês
+atributo id de ClientEntity alterado de Long para UUID
+
+:12-05-2023
+@toDo
+jUnit
+verificar a possibilidade de customizar exceções lançadas pelo validation
+Remover os autowired
+separar melhor as Dto's
+alterar id para UUID
+
+@changelog
+adicionado createdAt e updatedAt na entidade conforme evandro.
+builder adicionado como anotação temporariamente no client entity
+deletado todos os metodos relacionados a update
+adicionado Lombok
+removido swagger
+adicionado makefile em sua versão inicial
+alterado domain para model
+alterado name de numResidencia para numeroResidencia em todas as instancias.
+alterado numeroResidencia para Integer
+corrigido erro na consulta de CPF em caso de duplicatas no banco
+Client separado em Entity e Model
