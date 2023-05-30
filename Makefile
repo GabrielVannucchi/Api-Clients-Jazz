@@ -1,4 +1,4 @@
-abrir:
+up:
 	docker-compose up
-fechar:
+down:
 	docker-compose down
