@@ -11,9 +11,12 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import tech.jazz.apicadastro.presentation.handler.exceptions.ClientNotFoundException;
+import tech.jazz.apicadastro.presentation.handler.exceptions.CpfOutOfFormatException;
 import tech.jazz.apicadastro.presentation.handler.exceptions.DuplicateCpfException;
 import tech.jazz.apicadastro.presentation.handler.exceptions.InvalidCepException;
 import tech.jazz.apicadastro.presentation.handler.exceptions.InvalidCepFormatException;
+import tech.jazz.apicadastro.presentation.handler.exceptions.UuidOutOfFormatException;
 
 @RestControllerAdvice
 public class RestExceptionHandler {
@@ -51,7 +54,7 @@ public class RestExceptionHandler {
     @ExceptionHandler(FeignException.class)
     public ResponseEntity<ProblemDetail> handlerFeignException(FeignException e) {
         final ProblemDetail problemDetail = problemDetailBuilder(HttpStatus.BAD_REQUEST,
-                e.getClass().getSimpleName(), "Ocorreu um erro de comunicação com o servidor viaCep", e);
+                e.getClass().getSimpleName(), "Connection error with viaCepApi", e);
         return ResponseEntity.status(problemDetail.getStatus())
                 .body(problemDetail
                 );
@@ -60,7 +63,7 @@ public class RestExceptionHandler {
     @ExceptionHandler(DateTimeParseException.class)
     public ResponseEntity<ProblemDetail> handlerDateTimeParseException(DateTimeParseException e) {
         final ProblemDetail problemDetail = problemDetailBuilder(HttpStatus.BAD_REQUEST,
-                e.getClass().getSimpleName(), "Insira uma data no formato 'yyyy-MM-dd'", e);
+                e.getClass().getSimpleName(), "Invalid DateTime format. 'yyyy-MM-dd'", e);
         return ResponseEntity.status(problemDetail.getStatus())
                 .body(problemDetail
                 );
@@ -69,7 +72,7 @@ public class RestExceptionHandler {
     @ExceptionHandler(DuplicateCpfException.class)
     public ResponseEntity<ProblemDetail> handlerDuplicateCpfException(DuplicateCpfException e) {
         final ProblemDetail problemDetail = problemDetailBuilder(HttpStatus.CONFLICT,
-                e.getClass().getSimpleName(), "O CPF informado já consta na base de dados e não pode ser duplicado", e);
+                e.getClass().getSimpleName(), e.getMessage(), e);
         return ResponseEntity.status(problemDetail.getStatus())
                 .body(problemDetail
                 );
@@ -78,7 +81,7 @@ public class RestExceptionHandler {
     @ExceptionHandler(InvalidCepException.class)
     public ResponseEntity<ProblemDetail> handlerInvalidCepException(InvalidCepException e) {
         final ProblemDetail problemDetail = problemDetailBuilder(HttpStatus.BAD_REQUEST,
-                e.getClass().getSimpleName(), "O cep informado não corresponde com um endereço existente", e);
+                e.getClass().getSimpleName(), e.getMessage(), e);
         return ResponseEntity.status(problemDetail.getStatus())
                 .body(problemDetail
                 );
@@ -87,9 +90,38 @@ public class RestExceptionHandler {
     @ExceptionHandler(InvalidCepFormatException.class)
     public ResponseEntity<ProblemDetail> handlerInvalidCepFormatException(InvalidCepFormatException e) {
         final ProblemDetail problemDetail = problemDetailBuilder(HttpStatus.BAD_REQUEST,
-                e.getClass().getSimpleName(), "Informe o cep em um formato válido: 00000-000 ou 00000000", e);
+                e.getClass().getSimpleName(), e.getMessage(), e);
         return ResponseEntity.status(problemDetail.getStatus())
                 .body(problemDetail
                 );
     }
+
+    @ExceptionHandler(CpfOutOfFormatException.class)
+    public ResponseEntity<ProblemDetail> handlerCpfOutOfFormatException(CpfOutOfFormatException e) {
+        final ProblemDetail problemDetail = problemDetailBuilder(HttpStatus.BAD_REQUEST,
+                e.getClass().getSimpleName(), e.getMessage(), e);
+        return ResponseEntity.status(problemDetail.getStatus())
+                .body(problemDetail
+                );
+    }
+
+    @ExceptionHandler(UuidOutOfFormatException.class)
+    public ResponseEntity<ProblemDetail> handlerUuidOutOfFormatException(UuidOutOfFormatException e) {
+        final ProblemDetail problemDetail = problemDetailBuilder(HttpStatus.BAD_REQUEST,
+                e.getClass().getSimpleName(), e.getMessage(), e);
+        return ResponseEntity.status(problemDetail.getStatus())
+                .body(problemDetail
+                );
+    }
+
+    @ExceptionHandler(ClientNotFoundException.class)
+    public ResponseEntity<ProblemDetail> handlerClientNotFoundExceptionException(ClientNotFoundException e) {
+        final ProblemDetail problemDetail = problemDetailBuilder(HttpStatus.NOT_FOUND,
+                e.getClass().getSimpleName(), e.getMessage(), e);
+        return ResponseEntity.status(problemDetail.getStatus())
+                .body(problemDetail
+                );
+    }
+
+
 }

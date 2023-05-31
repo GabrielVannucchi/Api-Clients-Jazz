@@ -3,9 +3,7 @@ package tech.jazz.apicadastro.applicationservice.clientsservice;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 import tech.jazz.apicadastro.applicationservice.dto.ClientRequestDto;
 import tech.jazz.apicadastro.infrastructure.domain.Adress;
 import tech.jazz.apicadastro.infrastructure.domain.Client;
@@ -13,6 +11,7 @@ import tech.jazz.apicadastro.infrastructure.mapper.ClientMapper;
 import tech.jazz.apicadastro.infrastructure.repository.ClientsRepository;
 import tech.jazz.apicadastro.infrastructure.repository.entity.ClientEntity;
 import tech.jazz.apicadastro.presentation.dto.ClientResponseDto;
+import tech.jazz.apicadastro.presentation.handler.exceptions.ClientNotFoundException;
 import tech.jazz.apicadastro.presentation.handler.exceptions.InvalidCepException;
 import tech.jazz.apicadastro.presentation.handler.exceptions.InvalidCepFormatException;
 
@@ -41,7 +40,7 @@ public class CreateClientsService {
 
     public void deleteById(String id) {
         final ClientEntity client = clientsRepository.findFirstById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatusCode.valueOf(404), "client not found"));
+                .orElseThrow(() -> new ClientNotFoundException("client not found"));
 
         clientsRepository.delete(client);
         //logger.info(String.format("Usuario %s deletado com sucesso do id %d", client.getNome(), client.getId()));
@@ -49,11 +48,11 @@ public class CreateClientsService {
 
     private Adress validateAdress(String cep, Integer numResidencia, String complemento) {
         if (!(cep.matches("^\\d{8}|\\d{5}-\\d{3}$"))) {
-            throw new InvalidCepFormatException();
+            throw new InvalidCepFormatException("Insert cep in a valid format: 00000-000 or 00000000");
         }
         final Adress adress = new Adress(viaCepClient.getCep(cep),numResidencia, complemento);
         if (adress.getCep() == null) {
-            throw new InvalidCepException();
+            throw new InvalidCepException("Cep don't refer to a existent address");
         }
         return adress;
     }

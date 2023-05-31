@@ -19,7 +19,6 @@ import tech.jazz.apicadastro.applicationservice.clientsservice.CreateClientsServ
 import tech.jazz.apicadastro.applicationservice.clientsservice.SearchClientsService;
 import tech.jazz.apicadastro.applicationservice.dto.ClientRequestDto;
 import tech.jazz.apicadastro.infrastructure.domain.Client;
-import tech.jazz.apicadastro.infrastructure.repository.entity.ClientEntity;
 import tech.jazz.apicadastro.presentation.dto.ClientResponseDto;
 import tech.jazz.apicadastro.presentation.handler.exceptions.DuplicateCpfException;
 
@@ -50,7 +49,7 @@ public class ClientsController {
     @Tag(name = "Retorna cliente referente ao cpf", description = "Devolve um objeto cliente com o cpf solicitado")
     @ApiResponse(responseCode = "200", description = "Cliente encontrado")
     @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
-    public ResponseEntity<ClientEntity> findByCpf(@PathVariable String cpf) {
+    public ResponseEntity<ClientResponseDto> findByCpf(@PathVariable String cpf) {
         return ResponseEntity.status(200).body(searchClientsService.findByCpf(cpf));
     }
 
@@ -63,7 +62,7 @@ public class ClientsController {
         if (!searchClientsService.existsByCpf(clientRequestDto.cpf())) {
             return ResponseEntity.status(201).body(createClientsService.save(clientRequestDto));
         } else {
-            throw new DuplicateCpfException();
+            throw new DuplicateCpfException("CPF already registered");
         }
     }
 

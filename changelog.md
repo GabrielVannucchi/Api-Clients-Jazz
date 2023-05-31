@@ -1,3 +1,14 @@
+:31-05-2023
+@toDo
+aplicação no docker
+tentar entender como testar o método de delete
+
+@changelog
+mensagens enviadas pelas exceções alteradas para ingles
+alterada forma que as mensagens são insteridas na ControllerAdvice
+service totalmente coberta pelos testes unitarios (exceto delete, que é desejavel)
+CPF e UUID validados com regex
+
 :30-05-2023
 @toDo
 utilizar regex para validação de cpf e id
