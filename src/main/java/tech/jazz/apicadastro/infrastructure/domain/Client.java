@@ -1,6 +1,7 @@
 package tech.jazz.apicadastro.infrastructure.domain;
 
 
+import feign.FeignException;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotBlank;
@@ -9,6 +10,7 @@ import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 import lombok.Builder;
 import org.hibernate.validator.constraints.br.CPF;
+import tech.jazz.apicadastro.presentation.handler.exceptions.ClientNotFoundException;
 
 public record Client(
         @NotBlank

@@ -14,6 +14,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Immutable;
 import org.hibernate.annotations.UpdateTimestamp;
 import tech.jazz.apicadastro.infrastructure.domain.Adress;
+import tech.jazz.apicadastro.presentation.handler.exceptions.ClientNotFoundException;
 
 @Entity
 @Table(name = "CLIENT")
@@ -42,6 +43,9 @@ public class ClientEntity {
 
     @Builder
     public ClientEntity(String name, String cpf, LocalDate birthdate, Adress adress) {
+        if (name == null) {
+            throw new NullPointerException("Object is null for mapping");
+        }
         this.id = UUID.randomUUID().toString();
         this.name = name;
         this.cpf = cpf;

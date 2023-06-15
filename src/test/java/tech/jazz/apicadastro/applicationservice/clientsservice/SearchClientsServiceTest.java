@@ -26,7 +26,6 @@ import tech.jazz.apicadastro.presentation.dto.AdressDto;
 import tech.jazz.apicadastro.presentation.dto.ClientResponseDto;
 import tech.jazz.apicadastro.presentation.handler.exceptions.ClientNotFoundException;
 import tech.jazz.apicadastro.presentation.handler.exceptions.CpfOutOfFormatException;
-import tech.jazz.apicadastro.presentation.handler.exceptions.UuidOutOfFormatException;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -44,46 +43,40 @@ class SearchClientsServiceTest {
     ArgumentCaptor<String> idCaptor;
 
     @Test
-    void should_list_all(){
-        Mockito.when(clientsRepository.findAll()).thenReturn(List.of(ClientEntity.builder().build(),
-                ClientEntity.builder().build(),ClientEntity.builder().build()));
-        List<ClientResponseDto> clientEntities = searchClientsService.listAll();
+    void should_list_all() {
+        Mockito.when(clientsRepository.findAll()).thenReturn(List.of(new ClientEntity(), new ClientEntity(), new ClientEntity()));
+        List<ClientResponseDto> clientEntities = searchClientsService.findBy(null);
         assertEquals(3, clientEntities.size());
     }
 
     @Test
-    void should_find_client_by_id(){
+    void should_find_client_by_id() {
         Mockito.when(clientsRepository.findFirstById(idCaptor.capture())).thenReturn(Optional.of(clientEntityFactory()));
-        ClientResponseDto responseDto = searchClientsService.findById(UUID.randomUUID().toString());
+        ClientResponseDto responseDto = searchClientsService.findById(UUID.randomUUID());
         assertNotNull(responseDto);
     }
 
     @Test
-    void should_throw_ClientNotFoundException_in_findById(){
-        assertThrows(ClientNotFoundException.class, () -> searchClientsService.findById(UUID.randomUUID().toString()));
+    void should_throw_ClientNotFoundException_in_findById() {
+        assertThrows(ClientNotFoundException.class, () -> searchClientsService.findById(UUID.randomUUID()));
     }
 
     @Test
-    void should_throw_UuidOutOfFormatException_with_incorrect_UUID_format(){
-        assertThrows(UuidOutOfFormatException.class, () -> searchClientsService.findById("aaaaaa"));
+    void should_throw_CpfOutOfFormatException_with_incorrect_CPF_format() {
+        assertThrows(CpfOutOfFormatException.class, () -> searchClientsService.findBy("aaaaa"));
     }
 
     @Test
-    void should_throw_CpfOutOfFormatException_with_incorrect_CPF_format(){
-        assertThrows(CpfOutOfFormatException.class, () -> searchClientsService.findByCpf("aaaaa"));
+    void should_throw_ClientNotFoundException_in_findByCpf() {
+        assertThrows(ClientNotFoundException.class, () -> searchClientsService.findBy("01234567890"));
     }
 
     @Test
-    void should_throw_ClientNotFoundException_in_findByCpf(){
-        assertThrows(ClientNotFoundException.class, () -> searchClientsService.findByCpf("01234567890"));
-    }
-
-    @Test
-    void should_find_client_by_cpf(){
-        Mockito.when(clientsRepository.findFirstByCpf(idCaptor.capture())).thenReturn(Optional.of(clientEntityFactory()));
-        ClientResponseDto responseDto = searchClientsService.findByCpf("01234567890");
+    void should_find_client_by_cpf() {
+        Mockito.when(clientsRepository.findByCpf(idCaptor.capture())).thenReturn(List.of(clientEntityFactory()));
+        List<ClientResponseDto> responseDto = searchClientsService.findBy("01234567890");
         assertNotNull(responseDto);
-        responseDto = searchClientsService.findByCpf("012.345.678-90");
+        responseDto = searchClientsService.findBy("012.345.678-90");
         assertNotNull(responseDto);
 
     }
